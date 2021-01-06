@@ -5,10 +5,6 @@ import (
 	"fmt"
 )
 
-// функция для обрабтки заказов на проверку
-// важно, чтобы она нормально работала с контекстом и завершалась при его закрытии.
-type CheckOrderProcessorFunc func(ctx context.Context, o CheckOrder) (msg string, success bool, err error)
-
 // инстанциирует новый процессор по данной функции для обработки заказов на проверку.
 func NewCheckOrderProcessor(f CheckOrderProcessorFunc) (CheckOrderProcessor, error) {
 	if f == nil {

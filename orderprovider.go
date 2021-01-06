@@ -21,7 +21,7 @@ const (
 	lagRetrievingTimeout = time.Second * 5
 )
 
-func NewOrderProvider(config helpful.Config, logger helpful.Logger) (CheckOrderProvider, error) {
+func NewKafkaOrderProvider(config helpful.Config, logger helpful.Logger) (CheckOrderProvider, error) {
 
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil config")

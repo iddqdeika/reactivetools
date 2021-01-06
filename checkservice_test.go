@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewCheckService(t *testing.T) {
-	logger := helpful.DefaultLogger
+	logger := helpful.DefaultLogger.WithLevel(helpful.LogNone)
 
 	cfg, err := helpful.NewJsonCfg("config/check_service_cfg_test.json")
 	if err != nil {

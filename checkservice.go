@@ -9,11 +9,53 @@ import (
 
 const (
 	processRetryInterval = time.Second * 5
+
+	CheckOrderProviderConfigKey   = "check_order_provider"
+	CheckResultPublisherConfigKey = "check_result_publisher"
 )
 
+// инстанциирует сервис проверки, инициализируя провайдер и паблишер из конфига
+// стоит использовать, когда надо сделать стандартный сервис.
+// в конфиге должны быть соответствующие компонентам дети (Child): provider и publisher
+// также необходимо передать реализацию CheckOrderProcessorFunc (сама логика проверки) и Logger
+func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, f CheckOrderProcessorFunc) (CheckService, error) {
+	if cfg == nil {
+		return nil, fmt.Errorf("must be not-nil Config")
+	}
+	if l == nil {
+		return nil, fmt.Errorf("must be not-nil Logger")
+	}
+	if f == nil {
+		return nil, fmt.Errorf("must be not-nil CheckOrderProcessorFunc")
+	}
+
+	// соберем провайдера
+	prov, err := NewKafkaOrderProvider(cfg.Child(CheckOrderProviderConfigKey), l)
+	if err != nil {
+		return nil, err
+	}
+
+	// соберем процессор с данной функцией-обработчиком
+	proc, err := NewCheckOrderProcessor(f)
+	if err != nil {
+		return nil, err
+	}
+
+	// соберем паблишер
+	pub, err := NewKafkaResultPublisher(cfg.Child(CheckResultPublisherConfigKey), l)
+	if err != nil {
+		return nil, err
+	}
+
+	// собираем сам сервис
+	return NewCheckService(cfg, l, prov, proc, pub)
+
+}
+
+// инстанциирует сервис проверки с данными компонентами.
 func NewCheckService(cfg helpful.Config, l helpful.Logger,
 	prov CheckOrderProvider, proc CheckOrderProcessor,
-	pub CheckResultPublisher) (*checkService, error) {
+	pub CheckResultPublisher) (CheckService, error) {
 
 	if cfg == nil {
 		return nil, fmt.Errorf("must be not-nil config")
@@ -73,7 +115,8 @@ func (c *checkService) Run(ctx context.Context) error {
 			return nil
 		case o, opened := <-c.provider.OrderChan():
 			if !opened {
-				return fmt.Errorf("check order channel was closed")
+				c.l.Infof("provider's order chan was closed, finishing")
+				return nil
 			}
 			c.l.Infof("got order %v for item %v", o.CheckName(), o.ObjectIdentifier())
 			c.dispatch(ctx, o)
