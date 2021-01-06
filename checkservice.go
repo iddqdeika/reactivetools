@@ -1,4 +1,4 @@
-package main
+package reactivetools
 
 import (
 	"context"
@@ -71,7 +71,10 @@ func (c *checkService) Run(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			return nil
-		case o := <-c.provider.OrderChan():
+		case o, opened := <-c.provider.OrderChan():
+			if !opened {
+				return fmt.Errorf("check order channel was closed")
+			}
 			c.l.Infof("got order %v for item %v", o.CheckName(), o.ObjectIdentifier())
 			c.dispatch(ctx, o)
 		}
@@ -167,7 +170,7 @@ func (c *checkService) dispatch(ctx context.Context, o CheckOrder) {
 
 func (c *checkService) process(o CheckOrder) {
 	for {
-		err := c.processor.Process(o)
+		err := c.processor.Process(nil, o)
 		if err == nil {
 			return
 		}

@@ -1,14 +1,17 @@
-package main
+package reactivetools
 
 import (
 	"fmt"
 	"sync"
 )
 
+// инициализирует заглушку-публикатор результатов
 func NewStubResultPublisher() CheckResultPublisher {
 	return &stubPublisher{}
 }
 
+// заглушка-публикатор результатов.
+// пишет данные о результате в консоль и усё.
 type stubPublisher struct {
 	m sync.Mutex
 	i int

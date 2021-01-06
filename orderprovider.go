@@ -1,4 +1,4 @@
-package main
+package reactivetools
 
 import (
 	"context"
@@ -21,7 +21,7 @@ const (
 	lagRetrievingTimeout = time.Second * 5
 )
 
-func New(config helpful.Config, logger helpful.Logger) (CheckOrderProvider, error) {
+func NewOrderProvider(config helpful.Config, logger helpful.Logger) (CheckOrderProvider, error) {
 
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil config")
@@ -136,28 +136,22 @@ func (p *checkOrderProvider) iteration() {
 		time.Sleep(intervalWhenCantGetMsg)
 		return
 	}
-	om := &CheckOrderMessage{}
-	err = json.Unmarshal(msg.Data(), om)
+	od := &checkOrderData{}
+	err = json.Unmarshal(msg.Data(), od)
 	if err != nil {
 		p.l.Errorf("cant parse msg from topic %v, skipping, err: %v", p.orderTopicName, err)
 		return
 	}
 
 	//skip other msgs
-	if !(om.ObjectType == p.objectType && om.CheckName == p.checkName) {
+	if !(od.ObjectType == p.objectType && od.CheckName == p.checkName) {
 		err := msg.Ack()
 		if err != nil {
 			p.l.Errorf("cant ack skipped msg, err: %v", err)
 		}
 		return
 	}
-	order := &checkOrder{
-		cn:        om.CheckName,
-		qm:        msg,
-		om:        *om,
-		result:    make(chan CheckResult),
-		published: make(chan struct{}),
-	}
+	order := newCheckOrder(od.CheckName, od.ObjectType, od.ObjectIdentifier, msg)
 	p.ch <- order
 }
 
@@ -165,40 +159,8 @@ func (p *checkOrderProvider) OrderChan() chan CheckOrder {
 	return p.ch
 }
 
-type CheckOrderMessage struct {
+type checkOrderData struct {
 	ObjectType       string `json:"object_type"`
 	CheckName        string `json:"check_name"`
 	ObjectIdentifier string `json:"object_identifier"`
-}
-
-type checkOrder struct {
-	cn        string
-	qm        *adapter.Message
-	om        CheckOrderMessage
-	result    chan CheckResult
-	published chan struct{}
-}
-
-func (o *checkOrder) Published() chan struct{} {
-	return o.published
-}
-
-func (o *checkOrder) CheckName() string {
-	return o.cn
-}
-
-func (o *checkOrder) ObjectIdentifier() string {
-	return o.om.ObjectIdentifier
-}
-
-func (o *checkOrder) Result() chan CheckResult {
-	return o.result
-}
-
-func (o *checkOrder) Ack() error {
-	return o.qm.Ack()
-}
-
-func (o *checkOrder) Nack() error {
-	return o.qm.Nack()
 }

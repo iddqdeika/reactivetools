@@ -1,4 +1,4 @@
-package main
+package reactivetools
 
 import (
 	"context"
@@ -16,8 +16,8 @@ const (
 	statisticsMethod = "statistics"
 )
 
-// конструктор
-func NewService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (*statisticService, error) {
+// конструктор сервиса статистики
+func NewStatisticService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (*statisticService, error) {
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil Config")
 	}
@@ -44,7 +44,7 @@ func NewService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (
 	return s, nil
 }
 
-// предоставляет метод для получения статистик и эхо метод
+// предоставляет http метод для получения статистик и эхо метод
 type statisticService struct {
 	port int
 	p    StatisticProvider

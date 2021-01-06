@@ -1,4 +1,4 @@
-package main
+package reactivetools
 
 import (
 	"encoding/json"
@@ -11,6 +11,7 @@ const (
 	ConfigResultsTopicNameKey = "pim_check_results_topic"
 )
 
+// инстанциирует публикатор результатов
 func NewKafkaResultPublisher(config helpful.Config, logger helpful.Logger) (CheckResultPublisher, error) {
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil config")
@@ -40,6 +41,8 @@ func NewKafkaResultPublisher(config helpful.Config, logger helpful.Logger) (Chec
 	}, nil
 }
 
+// публикатор результатов.
+// публикует результаты проверок в кафка.
 type publisher struct {
 	q               *adapter.Queue
 	l               helpful.Logger
@@ -50,7 +53,7 @@ func (p *publisher) PublishCheckResult(r CheckResult) error {
 	res := ResultDTO{
 		ObjectType:   r.ObjectType(),
 		Identifier:   r.ObjectIdentifier(),
-		CheckName:    r.CheckTypeName(),
+		CheckName:    r.CheckName(),
 		CheckStatus:  r.CheckSuccess(),
 		CheckMessage: r.ResultMessage(),
 	}

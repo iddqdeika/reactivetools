@@ -1,6 +1,9 @@
-package main
+package reactivetools
+
+import "context"
 
 type CheckOrder interface {
+	ObjectType() string
 	ObjectIdentifier() string
 	CheckName() string
 	Result() chan CheckResult
@@ -12,7 +15,7 @@ type CheckOrder interface {
 type CheckResult interface {
 	ObjectType() string
 	ObjectIdentifier() string
-	CheckTypeName() string
+	CheckName() string
 	ResultMessage() string
 	CheckSuccess() bool
 }
@@ -22,7 +25,7 @@ type CheckOrderProvider interface {
 }
 
 type CheckOrderProcessor interface {
-	Process(o CheckOrder) error
+	Process(ctx context.Context, o CheckOrder) error
 }
 
 type CheckResultPublisher interface {
