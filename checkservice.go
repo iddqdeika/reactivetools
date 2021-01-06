@@ -49,7 +49,6 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, f CheckOrderProc
 
 	// собираем сам сервис
 	return NewCheckService(cfg, l, prov, proc, pub)
-
 }
 
 // инстанциирует сервис проверки с данными компонентами.

@@ -21,6 +21,10 @@ type stubOrderProvider struct {
 	ch       chan CheckOrder
 }
 
+func (s *stubOrderProvider) Statistics() ([]Statistic, error) {
+	return nil, nil
+}
+
 func (s *stubOrderProvider) generate(ctx context.Context) {
 	for i := s.count; i > 0; i-- {
 		select {
