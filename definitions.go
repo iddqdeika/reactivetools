@@ -2,6 +2,8 @@ package reactivetools
 
 import "context"
 
+// сервис проверки.
+// запускается с контекстом, завершается без ошибки если контекст закрыт или закончились данные для обработки
 type CheckService interface {
 	Run(ctx context.Context) error
 }
