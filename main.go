@@ -1,5 +1,0 @@
-package reactivetools
-
-func main() {
-
-}
