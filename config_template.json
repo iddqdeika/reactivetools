@@ -1,0 +1,39 @@
+{
+  "parallelism": 10,
+  "check_order_provider": {
+    "pim_check_orders_topic": "test_topic",
+    "object_type": "test_type",
+    "check_name": "test_check",
+    "KAFKA": {
+      "ASYNC": 0,
+      "BATCH_SIZE": 10,
+      "BROKERS": "kafka:9092",
+      "CONTROLLER_ADDRESS": "kafka:9092",
+      "CONCURRENCY": 1,
+      "CONSUMER_GROUP": "test",
+      "DEFAULT_TOPIC_CONFIG": {
+        "NUM_PARTITIONS": 1,
+        "REPLICATION_FACTOR": 1
+      },
+      "QUEUES_TO_READ": "",
+      "QUEUES_TO_WRITE": ""
+    }
+  },
+  "check_result_publisher": {
+    "pim_check_results_topic": "test_topic",
+    "KAFKA": {
+      "ASYNC": 0,
+      "BATCH_SIZE": 10,
+      "BROKERS": "kafka:9092",
+      "CONTROLLER_ADDRESS": "kafka:9092",
+      "CONCURRENCY": 1,
+      "CONSUMER_GROUP": "pim",
+      "DEFAULT_TOPIC_CONFIG": {
+        "NUM_PARTITIONS": 1,
+        "REPLICATION_FACTOR": 1
+      },
+      "QUEUES_TO_READ": "",
+      "QUEUES_TO_WRITE": ""
+    }
+  }
+}

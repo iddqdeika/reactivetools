@@ -11,7 +11,7 @@ import (
 
 const (
 	checkServiceJsonConfigFootprintFileName = "config_footprint.json"
-	checkServiceJsonConfigFileName          = "config.json"
+	checkServiceJsonConfigFileName          = "config_template.json"
 )
 
 // собирает корень композиции с данной функцией-обработчиком заказа на проверку.
