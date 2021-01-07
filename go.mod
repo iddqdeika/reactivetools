@@ -1,4 +1,4 @@
-module reactivetools
+module github.com/iddqdeika/reactivetools
 
 go 1.13
 
