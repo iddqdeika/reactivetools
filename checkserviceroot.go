@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	checkServiceJsonConfigFootprintFileName = "config_footprint.json"
-	checkServiceJsonConfigFileName          = "config.json"
+	// название файла конфига, который будет читаться рутом при регистрации.
+	checkServiceJsonConfigFileName = "config.json"
 )
 
 // собирает корень композиции с данной функцией-обработчиком заказа на проверку.
