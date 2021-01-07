@@ -6,9 +6,9 @@ import (
 )
 
 // инстанциирует новый процессор по данной функции для обработки заказов на проверку.
-func NewCheckOrderProcessor(f CheckOrderProcessorFunc) (CheckOrderProcessor, error) {
+func NewCheckOrderProcessor(f CheckFunc) (CheckOrderProcessor, error) {
 	if f == nil {
-		return nil, fmt.Errorf("must be not-nil CheckOrderProcessorFunc")
+		return nil, fmt.Errorf("must be not-nil CheckFunc")
 	}
 	return &checkOrderProcessor{
 		f: f,
@@ -18,7 +18,7 @@ func NewCheckOrderProcessor(f CheckOrderProcessorFunc) (CheckOrderProcessor, err
 // процессов заказов на проверку.
 // выполняет саму проверку.
 type checkOrderProcessor struct {
-	f CheckOrderProcessorFunc
+	f CheckFunc
 }
 
 func (c *checkOrderProcessor) Process(ctx context.Context, o CheckOrder) error {

@@ -17,8 +17,8 @@ const (
 // инстанциирует сервис проверки, инициализируя провайдер и паблишер из конфига
 // стоит использовать, когда надо сделать стандартный сервис.
 // в конфиге должны быть соответствующие компонентам дети (Child): provider и publisher
-// также необходимо передать реализацию CheckOrderProcessorFunc (сама логика проверки) и Logger
-func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, f CheckOrderProcessorFunc) (CheckService, error) {
+// также необходимо передать реализацию CheckFunc (сама логика проверки) и Logger
+func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, f CheckFunc) (CheckService, error) {
 	if cfg == nil {
 		return nil, fmt.Errorf("must be not-nil Config")
 	}
@@ -26,7 +26,7 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, f CheckOrderProc
 		return nil, fmt.Errorf("must be not-nil Logger")
 	}
 	if f == nil {
-		return nil, fmt.Errorf("must be not-nil CheckOrderProcessorFunc")
+		return nil, fmt.Errorf("must be not-nil CheckFunc")
 	}
 
 	// соберем провайдера
