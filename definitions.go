@@ -1,6 +1,9 @@
 package reactivetools
 
-import "context"
+import (
+	"context"
+	"io"
+)
 
 // сервис проверки.
 // запускается с контекстом, завершается без ошибки если контекст закрыт или закончились данные для обработки
@@ -88,4 +91,46 @@ type Statistic interface {
 	Name() string
 	Value() string
 	Description() string
+}
+
+// сервис для получения и обработки изменений
+type ChangesConsumerService interface {
+	Run(ctx context.Context) error
+}
+
+// предоставляет канал изменений, начитывая его, например, из кафка
+type ChangesProvider interface {
+	ChangesChan() chan ChangeEvent
+}
+
+// отвечает за обработку изменений
+type ChangesProcessor interface {
+	Process(event ChangeEvent) error
+}
+
+// аггрегатор изменений
+// собирает в себе изменения значений и хранит их в виде ключ-значение
+// любую логику завершения работы и gracefull shutdown нужно реализовывать в методе Close
+type ChangesAggregator interface {
+	ChangesProcessor
+	KeyValStorage
+	io.Closer
+}
+
+// аггрегатор данных ключ-значение
+// любая реализация должна быть конкурентно-безопасной
+type KeyValStorage interface {
+	Set(key string, val string) error
+	Get(key string) (string, error)
+}
+
+// объект, описывающий изменение
+type ChangeEvent interface {
+	ObjectType() string
+	ObjectIdentifier() string
+	EventName() string
+	Data() string
+	Ack() error
+	Nack() error
+	Processed() chan struct{}
 }

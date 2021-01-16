@@ -160,7 +160,7 @@ func (c *checkService) handleAcknowledging(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case o := <-c.acknowledging:
-			o = lastOrDefault(o, c.acknowledging)
+			o = lastOrDefaultOrder(o, c.acknowledging)
 			for {
 				err := o.Ack() //удалить когда adapter сможет в паралеллизм
 				if err != nil {
@@ -174,7 +174,7 @@ func (c *checkService) handleAcknowledging(ctx context.Context) {
 	}
 }
 
-func lastOrDefault(o CheckOrder, ch chan CheckOrder) CheckOrder {
+func lastOrDefaultOrder(o CheckOrder, ch chan CheckOrder) CheckOrder {
 	for {
 		select {
 		case o = <-ch:
