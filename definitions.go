@@ -2,6 +2,7 @@ package reactivetools
 
 import (
 	"context"
+	"github.com/iddqdeika/rrr/helpful"
 	"io"
 )
 
@@ -54,6 +55,10 @@ type CheckResult interface {
 // то после таймаута не стоит возвращать результат. вместо этого функция-процессор должна возвращать ошибку(err)
 type CheckProvider interface {
 	PerformCheck(ctx context.Context, o CheckOrder) (msg string, success bool, err error)
+}
+
+type CheckProviderFabric interface {
+	New(cfg helpful.Config, l helpful.Logger) (CheckProvider, error)
 }
 
 // провайдер заказов на проверку.

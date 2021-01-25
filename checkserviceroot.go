@@ -16,7 +16,7 @@ const (
 
 // собирает корень композиции с данной функцией-обработчиком заказа на проверку.
 // корень потом достаточно выполнить через rrr паттерн, чтобы получить готовое приложение.
-func NewKafkaCheckServiceRoot(p CheckProvider) (rrr.Root, error) {
+func NewKafkaCheckServiceRoot(p CheckProviderFabric) (rrr.Root, error) {
 	if p == nil {
 		return nil, fmt.Errorf("must be not-nil CheckProvider")
 	}
@@ -27,7 +27,7 @@ func NewKafkaCheckServiceRoot(p CheckProvider) (rrr.Root, error) {
 
 type kafkaCheckServiceRoot struct {
 	l helpful.Logger
-	p CheckProvider
+	p CheckProviderFabric
 	s CheckService
 }
 
@@ -54,8 +54,12 @@ func (r *kafkaCheckServiceRoot) Register() []error {
 		}
 	}
 
+	// дергаем фабрику провайдера
+	p, err := r.p.New(cfg.Child("provider"), r.l)
+	e(err)
+
 	// конструктор сервиса
-	r.s, err = NewKafkaCheckService(cfg, r.l, r.p)
+	r.s, err = NewKafkaCheckService(cfg, r.l, p)
 	e(err)
 
 	return errs

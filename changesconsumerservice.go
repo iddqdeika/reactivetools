@@ -57,7 +57,11 @@ func (c *consumer) Run(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			return nil
-		case e := <-c.prov.ChangesChan():
+		case e, opened := <-c.prov.ChangesChan():
+			if !opened {
+				c.l.Infof("provider's order chan was closed, finishing")
+				return nil
+			}
 			c.l.Infof("got event %v for %v(%v)", e.EventName(), e.ObjectType(), e.ObjectIdentifier())
 			c.dispatch(ctx, e)
 		}
