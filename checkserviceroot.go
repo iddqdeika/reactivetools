@@ -55,7 +55,7 @@ func (r *kafkaCheckServiceRoot) Register() []error {
 	}
 
 	// дергаем фабрику провайдера
-	p, err := r.p.New(cfg.Child("provider"), r.l)
+	p, err := r.p.New(cfg.Child("check_logic_provider"), r.l)
 	e(err)
 
 	// конструктор сервиса
