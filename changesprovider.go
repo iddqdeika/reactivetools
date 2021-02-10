@@ -13,7 +13,8 @@ const (
 	channelBuffer = 64
 )
 
-func NewChangesProvider(config helpful.Config, logger helpful.Logger) (ChangesProvider, error) {
+func NewChangesProvider(config helpful.Config, logger helpful.Logger,
+	interceptors ...ChangesInterceptor) (ChangesProvider, error) {
 
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil config")
@@ -53,6 +54,12 @@ func NewChangesProvider(config helpful.Config, logger helpful.Logger) (ChangesPr
 		orderTopicName:   orderTopic,
 		ch:               make(chan ChangeEvent, channelBuffer),
 	}
+	for _, interceptor := range interceptors {
+		if interceptor == nil {
+			return nil, fmt.Errorf("must be not-nil interceptor")
+		}
+		p.interceptors = append(p.interceptors, interceptor)
+	}
 	go p.run()
 	return p, nil
 }
@@ -65,6 +72,7 @@ type changesProvider struct {
 	l              helpful.Logger
 	orderTopicName string
 	ch             chan ChangeEvent
+	interceptors   []ChangesInterceptor
 }
 
 func (p *changesProvider) run() {
@@ -96,12 +104,22 @@ func (p *changesProvider) iteration() {
 		}
 		return
 	}
-	event := &changeEvent{
+	var event ChangeEvent
+	event = &changeEvent{
 		en:        cem.EventName,
 		qm:        msg,
 		change:    *cem,
 		processed: make(chan struct{}),
 	}
+	for _, interceptor := range p.interceptors {
+		ev, err := interceptor.Intercept(event)
+		if err != nil {
+			p.l.Infof("interceptor rejected event %v for entity(%v): %v with message: %v", event)
+			return
+		}
+		event = ev
+	}
+
 	p.ch <- event
 }
 

@@ -139,3 +139,10 @@ type ChangeEvent interface {
 	Nack() error
 	Processed() chan struct{}
 }
+
+// перехватчик изменений.
+// может изменять ивент или фильтровать его (возвращая ошибку с сообщением о причине фильтрации)
+// как правило передается в конструктор провайдера изменений.
+type ChangesInterceptor interface {
+	Intercept(event ChangeEvent) (ChangeEvent, error)
+}
