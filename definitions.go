@@ -146,3 +146,9 @@ type ChangeEvent interface {
 type ChangesInterceptor interface {
 	Intercept(event ChangeEvent) (ChangeEvent, error)
 }
+
+// конвертер.
+// используется, например, для преобразования значения в нужный тип перед записью в базу
+type ChangeValueConverter interface {
+	Convert(event ChangeEvent) (interface{}, error)
+}
