@@ -116,6 +116,10 @@ func (p *changesProvider) iteration() {
 		if err != nil {
 			p.l.Infof("interceptor rejected event %v for entity(%v): %v with message: %v",
 				event.EventName(), event.ObjectType(), event.ObjectIdentifier(), err)
+			err := msg.Ack()
+			if err != nil {
+				p.l.Errorf("cant ack skipped msg, err: %v", err)
+			}
 			return
 		}
 		event = ev
