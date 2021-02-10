@@ -114,7 +114,8 @@ func (p *changesProvider) iteration() {
 	for _, interceptor := range p.interceptors {
 		ev, err := interceptor.Intercept(event)
 		if err != nil {
-			p.l.Infof("interceptor rejected event %v for entity(%v): %v with message: %v", event)
+			p.l.Infof("interceptor rejected event %v for entity(%v): %v with message: %v",
+				event.EventName(), event.ObjectType(), event.ObjectIdentifier(), err)
 			return
 		}
 		event = ev
