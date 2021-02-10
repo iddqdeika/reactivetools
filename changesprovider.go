@@ -22,12 +22,7 @@ func NewChangesProvider(config helpful.Config, logger helpful.Logger) (ChangesPr
 		return nil, fmt.Errorf("must be not-nil logger")
 	}
 
-	orderTopic, err := config.GetString(ConfigOrderTopicNameKey)
-	if err != nil {
-		return nil, err
-	}
-
-	q, err := adapter.FromConfig(config, logger)
+	orderTopic, err := config.GetString("changes_topic_name")
 	if err != nil {
 		return nil, err
 	}
@@ -36,6 +31,10 @@ func NewChangesProvider(config helpful.Config, logger helpful.Logger) (ChangesPr
 		return nil, err
 	}
 	tot, err := config.GetString("target_object_type")
+	if err != nil {
+		return nil, err
+	}
+	q, err := adapter.FromConfig(config, logger)
 	if err != nil {
 		return nil, err
 	}
