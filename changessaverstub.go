@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func NewStub() ChangesProcessor {
+func NewStubChangesSaver() ChangesProcessor {
 	return stubSaver{}
 }
 
