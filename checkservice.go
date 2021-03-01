@@ -3,6 +3,7 @@ package reactivetools
 import (
 	"context"
 	"fmt"
+	"github.com/iddqdeika/rrr"
 	"github.com/iddqdeika/rrr/helpful"
 	"time"
 )
@@ -12,6 +13,7 @@ const (
 
 	CheckOrderProviderConfigKey   = "check_order_provider"
 	CheckResultPublisherConfigKey = "check_result_publisher"
+	StatisticServiceConfigKey     = "statistics"
 )
 
 // инстанциирует сервис проверки, инициализируя провайдер и паблишер из конфига
@@ -35,6 +37,12 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, p CheckProvider)
 		return nil, err
 	}
 
+	// статистик сервис
+	stats, err := NewStatisticService(cfg.Child(StatisticServiceConfigKey), prov, l)
+	if err != nil {
+		return nil, err
+	}
+
 	// соберем процессор с данной функцией-обработчиком
 	proc, err := NewCheckOrderProcessor(p)
 	if err != nil {
@@ -48,13 +56,13 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, p CheckProvider)
 	}
 
 	// собираем сам сервис
-	return NewCheckService(cfg, l, prov, proc, pub)
+	return NewCheckService(cfg, l, prov, proc, pub, stats)
 }
 
 // инстанциирует сервис проверки с данными компонентами.
 func NewCheckService(cfg helpful.Config, l helpful.Logger,
 	prov CheckOrderProvider, proc CheckOrderProcessor,
-	pub CheckResultPublisher) (CheckService, error) {
+	pub CheckResultPublisher, stats Service) (CheckService, error) {
 
 	if cfg == nil {
 		return nil, fmt.Errorf("must be not-nil config")
@@ -82,6 +90,7 @@ func NewCheckService(cfg helpful.Config, l helpful.Logger,
 		provider:      prov,
 		processor:     proc,
 		publisher:     pub,
+		stats:         stats,
 		balancer:      make(chan struct{}, parallelism),
 		processing:    make(chan CheckOrder, parallelism),
 		publishing:    make(chan CheckOrder, parallelism),
@@ -97,6 +106,8 @@ type checkService struct {
 	processor CheckOrderProcessor
 	publisher CheckResultPublisher
 
+	stats Service
+
 	balancer      chan struct{}
 	processing    chan CheckOrder
 	publishing    chan CheckOrder
@@ -104,6 +115,10 @@ type checkService struct {
 }
 
 func (c *checkService) Run(ctx context.Context) error {
+	return rrr.ComposeErrors("CheckService", rrr.RunServices(ctx, c.stats, c)...)
+}
+
+func (c *checkService) run(ctx context.Context) error {
 	go c.handleProcessing(ctx)
 	go c.handlePublishing(ctx)
 	go c.handleAcknowledging(ctx)

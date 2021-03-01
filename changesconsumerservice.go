@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func NewChangesConsumerService(cfg helpful.Config, l helpful.Logger, p ChangesProvider, s ChangesProcessor) (ChangesConsumerService, error) {
+func NewChangesConsumerService(cfg helpful.Config, l helpful.Logger, p ChangesProvider, s ChangesProcessor) (Service, error) {
 
 	if cfg == nil {
 		return nil, fmt.Errorf("must be not-nil config")

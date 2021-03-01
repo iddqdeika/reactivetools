@@ -99,7 +99,7 @@ type Statistic interface {
 }
 
 // сервис для получения и обработки изменений
-type ChangesConsumerService interface {
+type Service interface {
 	Run(ctx context.Context) error
 }
 

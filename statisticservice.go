@@ -17,7 +17,7 @@ const (
 )
 
 // конструктор сервиса статистики
-func NewStatisticService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (*statisticService, error) {
+func NewStatisticService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (Service, error) {
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil Config")
 	}

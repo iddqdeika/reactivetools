@@ -34,6 +34,8 @@ github.com/iddqdeika/kafka-adapter v1.3.8 h1:Cwfhpn2qLayceSJsEzhBm2QekaeBK1AyPyB
 github.com/iddqdeika/kafka-adapter v1.3.8/go.mod h1:YRz/UdUMVZk0nz5on+pugwXEk8/LY72mRdDAhKhih4E=
 github.com/iddqdeika/rrr v1.3.1 h1:ec++dTI73GR7R84DyzXakOUIL2JBNBdIyZanM6z3+O8=
 github.com/iddqdeika/rrr v1.3.1/go.mod h1:eZBPgRgsk49UKGXs6eg3YtqSzxfWiQoQ0Zz/e7i/s18=
+github.com/iddqdeika/rrr v1.3.5 h1:iqWkYw+MshNbYwqDPuFwWxS54AmeGlBLeNwKn06hZFU=
+github.com/iddqdeika/rrr v1.3.5/go.mod h1:eZBPgRgsk49UKGXs6eg3YtqSzxfWiQoQ0Zz/e7i/s18=
 github.com/jcmturner/gofork v1.0.0 h1:J7uCkflzTEhUZ64xqKnkDxq3kzc96ajM1Gli5ktUem8=
 github.com/jcmturner/gofork v1.0.0/go.mod h1:MK8+TM0La+2rjBD4jE12Kj1pCCxK7d2LK/UM3ncEo0o=
 github.com/klauspost/compress v1.9.8 h1:VMAMUUOh+gaxKTMk+zqbjsSjsIcUcL/LF4o63i82QyA=
