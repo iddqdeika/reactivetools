@@ -52,14 +52,17 @@ type statisticService struct {
 }
 
 func (s *statisticService) Run(ctx context.Context) error {
-	http.HandleFunc("/"+statisticsMethod, s.statisticHandler)
-	http.HandleFunc("/"+echoMethod, echo)
-
+	sm := http.NewServeMux()
+	sm.HandleFunc("/"+statisticsMethod, s.statisticHandler)
+	s.l.Infof("%v registered in statisticservice", statisticsMethod, strconv.Itoa(s.port))
+	sm.HandleFunc("/"+echoMethod, echo)
+	s.l.Infof("%v registered in statisticservice", echoMethod, strconv.Itoa(s.port))
 	ctx, cancel := context.WithCancel(ctx)
 
 	var err error
+	s.l.Infof("statisticservice started on port %v", strconv.Itoa(s.port))
 	go func() {
-		err = http.ListenAndServe(":"+strconv.Itoa(s.port), nil)
+		err = http.ListenAndServe(":"+strconv.Itoa(s.port), sm)
 		cancel()
 	}()
 	<-ctx.Done()
