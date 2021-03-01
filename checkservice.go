@@ -115,7 +115,16 @@ type checkService struct {
 }
 
 func (c *checkService) Run(ctx context.Context) error {
-	return rrr.ComposeErrors("CheckService", rrr.RunServices(ctx, c.stats, c)...)
+	errs := rrr.RunServices(ctx, c.stats, &serviceSurrogate{callback: c.run})
+	return rrr.ComposeErrors("CheckService", errs...)
+}
+
+type serviceSurrogate struct {
+	callback func(ctx context.Context) error
+}
+
+func (s *serviceSurrogate) Run(ctx context.Context) error {
+	return s.callback(ctx)
 }
 
 func (c *checkService) run(ctx context.Context) error {

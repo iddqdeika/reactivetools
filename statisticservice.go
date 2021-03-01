@@ -54,9 +54,9 @@ type statisticService struct {
 func (s *statisticService) Run(ctx context.Context) error {
 	sm := http.NewServeMux()
 	sm.HandleFunc("/"+statisticsMethod, s.statisticHandler)
-	s.l.Infof("%v registered in statisticservice", statisticsMethod, strconv.Itoa(s.port))
+	s.l.Infof("%v registered in statisticservice", statisticsMethod)
 	sm.HandleFunc("/"+echoMethod, echo)
-	s.l.Infof("%v registered in statisticservice", echoMethod, strconv.Itoa(s.port))
+	s.l.Infof("%v registered in statisticservice", echoMethod)
 	ctx, cancel := context.WithCancel(ctx)
 
 	var err error
