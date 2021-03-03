@@ -115,7 +115,13 @@ type checkService struct {
 }
 
 func (c *checkService) Run(ctx context.Context) error {
-	errs := rrr.RunServices(ctx, c.stats, &serviceSurrogate{callback: c.run})
+	// соберем сервисы для запуска (помимо самого сервиса проверок надо запустить, например, статистику, если она задана)
+	var services []rrr.Service
+	services = append(services, &serviceSurrogate{callback: c.run})
+	if c.stats != nil {
+		services = append(services, c.stats)
+	}
+	errs := rrr.RunServices(ctx, services...)
 	return rrr.ComposeErrors("CheckService", errs...)
 }
 

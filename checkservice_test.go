@@ -24,7 +24,7 @@ func TestNewCheckService(t *testing.T) {
 
 	publisher := NewStubResultPublisher()
 
-	checkService, err := NewCheckService(cfg, logger, provider, processor, publisher)
+	checkService, err := NewCheckService(cfg, logger, provider, processor, publisher, nil)
 	if err != nil {
 		t.Fatalf("cant create checkService: %v", err)
 	}
