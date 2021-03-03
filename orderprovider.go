@@ -99,7 +99,7 @@ func (p *checkOrderProvider) getKafkaLagStatistic() (Statistic, error) {
 		return nil, fmt.Errorf("cant get consumer lag for kafka: %v", err)
 	}
 	return &SimpleStatistic{
-		N:    "Consumer lag for \"item-attributes-validation\"",
+		N:    fmt.Sprintf("Consumer lag for check \"%v\" (object type: %v)", p.checkName, p.objectType),
 		V:    strconv.Itoa(int(lag - 1)),
 		Desc: `Очередь на проверку. Разница между оффсетами последних обработанного и записанного сообщений.`,
 	}, nil
