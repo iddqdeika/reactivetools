@@ -2,6 +2,7 @@ package reactivetools
 
 import (
 	"context"
+	"database/sql"
 	"github.com/iddqdeika/rrr/helpful"
 	"io"
 )
@@ -151,4 +152,12 @@ type ChangesInterceptor interface {
 // используется, например, для преобразования значения в нужный тип перед записью в базу
 type ChangeValueConverter interface {
 	Convert(event ChangeEvent) (interface{}, error)
+}
+
+type SqlSaverProcessorFabric interface {
+	New(cfg helpful.Config) (SqlSaverProcessor, error)
+}
+
+type SqlSaverProcessor interface {
+	Process(db *sql.DB, event ChangeEvent, l helpful.Logger) error
 }

@@ -48,13 +48,49 @@ func NewSimpleSqlChangesSaver(cfg helpful.Config, l helpful.Logger, c ChangeValu
 	if err != nil {
 		return nil, err
 	}
-	s := &sqlSaver{
-		db:                   db,
-		l:                    l,
+	ti := targetInfo{
 		tableName:            tableName,
 		identifierColumnName: itemColumn,
 		valueColumnName:      contentFlagColumn,
-		converter:            c,
+	}
+	s := &sqlSaver{
+		db: db,
+		l:  l,
+		p:  createDefaultProcessor(ti, c),
+	}
+	return s, nil
+}
+
+func NewCustomSqlChangesSaver(cfg helpful.Config, l helpful.Logger,
+	pf SqlSaverProcessorFabric) (ChangesProcessor, error) {
+	if cfg == nil {
+		return nil, fmt.Errorf("must be not-nil cfg")
+	}
+	if l == nil {
+		return nil, fmt.Errorf("must be not-nil logger")
+	}
+	if pf == nil {
+		return nil, fmt.Errorf("must be not-nil SqlSaverProcessorFunc")
+	}
+	connString, err := cfg.GetString("conn_string")
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := sql.Open("sqlserver", connString)
+	if err != nil {
+		return nil, err
+	}
+
+	p, err := pf.New(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	s := &sqlSaver{
+		db: db,
+		l:  l,
+		p:  p,
 	}
 	return s, nil
 }
@@ -63,33 +99,53 @@ type sqlSaver struct {
 	db *sql.DB
 	l  helpful.Logger
 
-	tableName            string
-	identifierColumnName string
-	valueColumnName      string
-	converter            ChangeValueConverter
+	p SqlSaverProcessor
 }
 
 func (s *sqlSaver) Process(event ChangeEvent) error {
+	return s.p.Process(s.db, event, s.l)
+}
+
+func createDefaultProcessor(i targetInfo,
+	c ChangeValueConverter) SqlSaverProcessor {
+	return &defaultProcessor{
+		i: i,
+		c: c,
+	}
+}
+
+type defaultProcessor struct {
+	i targetInfo
+	c ChangeValueConverter
+}
+
+func (p *defaultProcessor) Process(db *sql.DB, event ChangeEvent, l helpful.Logger) error {
 	query := fmt.Sprintf(`if not exists 
 (select * from %v where %v = @p1)
 insert into %v (%v, %v) values (@p1,@p2)
 else
 update %v set %v = @p2 where %v = @p1
-`, s.tableName, s.identifierColumnName, s.tableName, s.identifierColumnName,
-		s.valueColumnName, s.tableName, s.valueColumnName, s.identifierColumnName)
+`, p.i.tableName, p.i.identifierColumnName, p.i.tableName, p.i.identifierColumnName,
+		p.i.valueColumnName, p.i.tableName, p.i.valueColumnName, p.i.identifierColumnName)
 
-	data, err := s.converter.Convert(event)
+	data, err := p.c.Convert(event)
 	if err != nil {
 		return fmt.Errorf("cant convert data: %v", err)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
-	_, err = s.db.ExecContext(ctx, query, event.ObjectIdentifier(), data)
+	_, err = db.ExecContext(ctx, query, event.ObjectIdentifier(), data)
 	if err != nil {
 		return err
 	}
-	s.l.Infof("value (%v) for entity(%v): %v saved", event.Data(), event.ObjectType(), event.ObjectIdentifier())
+	l.Infof("value (%v) for entity(%v): %v saved", event.Data(), event.ObjectType(), event.ObjectIdentifier())
 	return nil
+}
+
+type targetInfo struct {
+	tableName            string
+	identifierColumnName string
+	valueColumnName      string
 }
 
 type defaultChangeValueConverter struct {
