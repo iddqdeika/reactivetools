@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/iddqdeika/rrr/helpful"
 	"strconv"
+	"strings"
 	"time"
 
 	_ "github.com/denisenkom/go-mssqldb"
@@ -152,7 +153,7 @@ type defaultChangeValueConverter struct {
 }
 
 func (d defaultChangeValueConverter) Convert(event ChangeEvent) (interface{}, error) {
-	return event.Data(), nil
+	return strings.Replace(event.Data(), ",", ";", -1), nil
 }
 
 type intChangeValueConverter struct {

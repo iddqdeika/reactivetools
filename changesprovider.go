@@ -5,7 +5,6 @@ import (
 	"fmt"
 	adapter "github.com/iddqdeika/kafka-adapter"
 	"github.com/iddqdeika/rrr/helpful"
-	"strings"
 	"time"
 )
 
@@ -163,7 +162,7 @@ func (o *changeEvent) ObjectIdentifier() string {
 }
 
 func (o *changeEvent) Data() string {
-	return strings.Replace(o.change.Data, ",", ";", -1)
+	return o.change.Data
 }
 
 func (o *changeEvent) Ack() error {
