@@ -40,7 +40,7 @@ func NewSimpleSqlChangesSaver(cfg helpful.Config, l helpful.Logger, c ChangeValu
 	if err != nil {
 		return nil, err
 	}
-	contentFlagColumn, err := cfg.GetString("content_flags_column")
+	contentFlagColumn, err := cfg.GetString("data_column")
 	if err != nil {
 		return nil, err
 	}
