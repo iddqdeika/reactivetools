@@ -32,6 +32,8 @@ github.com/hashicorp/go-uuid v1.0.2 h1:cfejS+Tpcp13yd5nYHWDI6qVCny6wyX2Mt5SGur2I
 github.com/hashicorp/go-uuid v1.0.2/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/iddqdeika/kafka-adapter v1.3.8 h1:Cwfhpn2qLayceSJsEzhBm2QekaeBK1AyPyB+wFAWdDE=
 github.com/iddqdeika/kafka-adapter v1.3.8/go.mod h1:YRz/UdUMVZk0nz5on+pugwXEk8/LY72mRdDAhKhih4E=
+github.com/iddqdeika/kafka-adapter v1.5.5 h1:tuAVdDMWDEEkPj9ucLlnjZbngkh/8QX/lBPf6CdfDwo=
+github.com/iddqdeika/kafka-adapter v1.5.5/go.mod h1:pvDRAyBavVaVNg645fvk82nYQ7zqSJsKgZ053AN3hfk=
 github.com/iddqdeika/rrr v1.3.1 h1:ec++dTI73GR7R84DyzXakOUIL2JBNBdIyZanM6z3+O8=
 github.com/iddqdeika/rrr v1.3.1/go.mod h1:eZBPgRgsk49UKGXs6eg3YtqSzxfWiQoQ0Zz/e7i/s18=
 github.com/iddqdeika/rrr v1.3.5 h1:iqWkYw+MshNbYwqDPuFwWxS54AmeGlBLeNwKn06hZFU=
@@ -62,6 +64,8 @@ github.com/rcrowley/go-metrics v0.0.0-20190826022208-cac0b30c2563 h1:dY6ETXrvDG7
 github.com/rcrowley/go-metrics v0.0.0-20190826022208-cac0b30c2563/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/segmentio/kafka-go v0.3.6 h1:+JauPDvHurc4XSJVGniNwFuv4NmRLr1CxWvhWkRAtXA=
 github.com/segmentio/kafka-go v0.3.6/go.mod h1:8rEphJEczp+yDE/R5vwmaqZgF1wllrl4ioQcNKB8wVA=
+github.com/segmentio/kafka-go v0.3.10 h1:h/1aSu7gWp6DXLmp0csxm8wrYD6rRYyaqclu2aQ/PWo=
+github.com/segmentio/kafka-go v0.3.10/go.mod h1:8rEphJEczp+yDE/R5vwmaqZgF1wllrl4ioQcNKB8wVA=
 github.com/stretchr/objx v0.1.0 h1:4G4v2dO3VZwixGIRoQ5Lfboy6nUhCyYzaqnIAPPhYs4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
