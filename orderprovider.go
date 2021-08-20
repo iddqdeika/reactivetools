@@ -100,7 +100,7 @@ func (p *checkOrderProvider) getKafkaLagStatistic() (Statistic, error) {
 	}
 	return &SimpleStatistic{
 		N:    fmt.Sprintf("Consumer lag for check \"%v\" (object type: %v)", p.checkName, p.objectType),
-		V:    strconv.Itoa(int(lag - 1)),
+		V:    strconv.Itoa(int(lag)),
 		Desc: `Очередь на проверку. Разница между оффсетами последних обработанного и записанного сообщений.`,
 	}, nil
 }
