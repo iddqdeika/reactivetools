@@ -122,7 +122,7 @@ func (c *consumer) process(e ChangeEvent) {
 		if err == nil {
 			return
 		}
-		c.l.Errorf("err during check order processing: %v", err)
+		c.l.Errorf("err during change event processing: %v", err)
 		time.Sleep(processRetryInterval)
 	}
 }

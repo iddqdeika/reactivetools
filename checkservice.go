@@ -162,10 +162,14 @@ func (c *checkService) handleProcessing(ctx context.Context) {
 		case o := <-c.processing:
 			c.publishing <- o
 			go func() {
-				res := <-o.Result()
+				defer close(o.Published())
+				res, alive := <-o.Result()
+				if !alive {
+					c.l.Infof("order %v for item result chan is closed, skipping result publishing", o.CheckName(), o.ObjectIdentifier())
+					return
+				}
 				c.publish(res)
 				c.l.Infof("order %v for item %v published", o.CheckName(), o.ObjectIdentifier())
-				close(o.Published())
 			}()
 		}
 	}
