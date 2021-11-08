@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+var ErrNeedSkipResult = fmt.Errorf("need skip result")
+
 // инстанциирует новый процессор по данной функции для обработки заказов на проверку.
 func NewCheckOrderProcessor(p CheckProvider) (CheckOrderProcessor, error) {
 	if p == nil {
@@ -27,7 +29,7 @@ func (c *checkOrderProcessor) Process(ctx context.Context, o CheckOrder) error {
 
 func (c *checkOrderProcessor) process(ctx context.Context, o CheckOrder) error {
 	msg, success, err := c.p.PerformCheck(ctx, o)
-	if err != nil {
+	if err != nil && err != ErrNeedSkipResult {
 		return err
 	}
 	setResult(o, msg, success)

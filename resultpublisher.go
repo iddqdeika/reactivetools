@@ -50,6 +50,9 @@ type publisher struct {
 }
 
 func (p *publisher) PublishCheckResult(r CheckResult) error {
+	if r == nil {
+		return nil
+	}
 	res := ResultDTO{
 		ObjectType:   r.ObjectType(),
 		Identifier:   r.ObjectIdentifier(),
