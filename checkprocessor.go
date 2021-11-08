@@ -29,7 +29,11 @@ func (c *checkOrderProcessor) Process(ctx context.Context, o CheckOrder) error {
 
 func (c *checkOrderProcessor) process(ctx context.Context, o CheckOrder) error {
 	msg, success, err := c.p.PerformCheck(ctx, o)
-	if err != nil && err != ErrNeedSkipResult {
+	if err == ErrNeedSkipResult {
+		skipResult(o)
+		return nil
+	}
+	if err != nil {
 		return err
 	}
 	setResult(o, msg, success)
@@ -38,4 +42,8 @@ func (c *checkOrderProcessor) process(ctx context.Context, o CheckOrder) error {
 
 func setResult(o CheckOrder, msg string, success bool) {
 	o.Result() <- NewCheckResult(o.ObjectType(), o.ObjectIdentifier(), o.CheckName(), msg, success)
+}
+
+func skipResult(o CheckOrder) {
+	o.Result() <- nil
 }
