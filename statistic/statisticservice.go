@@ -37,6 +37,7 @@ func NewStatisticService(config helpful.Config, sp StatisticProvider, l helpful.
 	if port < minPort {
 		return nil, fmt.Errorf("port must be above %v", minPort)
 	}
+
 	s := &statisticService{
 		port: port,
 		p:    sp,

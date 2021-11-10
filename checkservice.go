@@ -3,6 +3,7 @@ package reactivetools
 import (
 	"context"
 	"fmt"
+	kafkaadapt "github.com/iddqdeika/kafka-adapter"
 	"github.com/iddqdeika/reactivetools/statistic"
 	"github.com/iddqdeika/rrr"
 	"github.com/iddqdeika/rrr/helpful"
@@ -38,11 +39,25 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, p CheckProvider)
 		return nil, err
 	}
 
+	var services []rrr.Service
+	if cfg.Child("kafka") != nil {
+		adapt, err := kafkaadapt.FromConfig(cfg, l)
+		if err != nil {
+			return nil, err
+		}
+		sender, err := statistic.NewStatisticSender(l, cfg.Child("statistic_sender"), prov, adapt)
+		if err != nil {
+			return nil, err
+		}
+		services = append(services, sender)
+	}
+
 	// статистик сервис
 	stats, err := statistic.NewStatisticService(cfg.Child(StatisticServiceConfigKey), prov, l)
 	if err != nil {
 		return nil, err
 	}
+	services = append(services, stats)
 
 	// соберем процессор с данной функцией-обработчиком
 	proc, err := NewCheckOrderProcessor(p)
@@ -57,13 +72,13 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, p CheckProvider)
 	}
 
 	// собираем сам сервис
-	return NewCheckService(cfg, l, prov, proc, pub, stats)
+	return NewCheckService(cfg, l, prov, proc, pub, services...)
 }
 
 // инстанциирует сервис проверки с данными компонентами.
 func NewCheckService(cfg helpful.Config, l helpful.Logger,
 	prov CheckOrderProvider, proc CheckOrderProcessor,
-	pub CheckResultPublisher, stats Service) (CheckService, error) {
+	pub CheckResultPublisher, services ...rrr.Service) (CheckService, error) {
 
 	if cfg == nil {
 		return nil, fmt.Errorf("must be not-nil config")
@@ -91,7 +106,7 @@ func NewCheckService(cfg helpful.Config, l helpful.Logger,
 		provider:      prov,
 		processor:     proc,
 		publisher:     pub,
-		stats:         stats,
+		services:      services,
 		balancer:      make(chan struct{}, parallelism),
 		processing:    make(chan CheckOrder, parallelism),
 		publishing:    make(chan CheckOrder, parallelism),
@@ -107,7 +122,7 @@ type checkService struct {
 	processor CheckOrderProcessor
 	publisher CheckResultPublisher
 
-	stats Service
+	services []rrr.Service
 
 	balancer      chan struct{}
 	processing    chan CheckOrder
@@ -119,9 +134,7 @@ func (c *checkService) Run(ctx context.Context) error {
 	// соберем сервисы для запуска (помимо самого сервиса проверок надо запустить, например, статистику, если она задана)
 	var services []rrr.Service
 	services = append(services, &serviceSurrogate{callback: c.run})
-	if c.stats != nil {
-		services = append(services, c.stats)
-	}
+	services = append(services, c.services...)
 	errs := rrr.RunServices(ctx, services...)
 	return rrr.ComposeErrors("CheckService", errs...)
 }
