@@ -31,12 +31,14 @@ func NewStatisticAggregator(l helpful.Logger, cfg helpful.Config, adapt *kafkaad
 	if err != nil {
 		return nil, err
 	}
-	return &kafkaStatisticAggregator{
+	res := &kafkaStatisticAggregator{
 		l:     l,
 		adapt: adapt,
 		topic: topic,
 		c:     cache,
-	}, nil
+	}
+	go res.run(context.Background())
+	return res, nil
 }
 
 type kafkaStatisticAggregator struct {
