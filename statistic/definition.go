@@ -13,5 +13,4 @@ type Statistic interface {
 	Name() string
 	Value() string
 	Description() string
-	Error() error
 }

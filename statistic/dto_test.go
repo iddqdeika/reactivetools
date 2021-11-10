@@ -13,7 +13,6 @@ func testStatisticDTO(t *testing.T, n string, v string, d string, e string) {
 		Name:        n,
 		Value:       v,
 		Descriprion: d,
-		Error:       e,
 	}
 	data := dto.marshal()
 	res, err := unmarshal(data)
@@ -22,8 +21,7 @@ func testStatisticDTO(t *testing.T, n string, v string, d string, e string) {
 	}
 	if res.Name != dto.Name ||
 		res.Value != dto.Value ||
-		res.Descriprion != dto.Descriprion ||
-		res.Error != dto.Error {
+		res.Descriprion != dto.Descriprion {
 		t.Fatal("incorrect StatisticDTO data after marshal-unmarshal")
 	}
 }

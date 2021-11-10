@@ -13,7 +13,6 @@ func convert(s Statistic) (StatisticDTO, error) {
 		Name:        s.Name(),
 		Value:       s.Value(),
 		Descriprion: s.Description(),
-		Error:       s.Error().Error(),
 	}, nil
 }
 
@@ -21,7 +20,7 @@ type StatisticDTO struct {
 	Name        string `json:"name"`
 	Value       string `json:"value"`
 	Descriprion string `json:"descriprion"`
-	Error       string `json:"error"`
+	//Error       string `json:"error"`
 }
 
 func (o StatisticDTO) marshal() []byte {
@@ -47,10 +46,6 @@ func (s statisticProxy) Value() string {
 
 func (s statisticProxy) Description() string {
 	return s.dto.Descriprion
-}
-
-func (s statisticProxy) Error() error {
-	return fmt.Errorf(s.dto.Error)
 }
 
 func unmarshal(data []byte) (StatisticDTO, error) {
