@@ -50,7 +50,7 @@ type kafkaStatisticAggregator struct {
 
 func (k *kafkaStatisticAggregator) run(ctx context.Context) {
 	k.l.Infof("kafka statistic aggregator daemon for topic %v started", k.topic)
-	k.l.Infof("kafka statistic aggregator daemon for topic %v finished", k.topic)
+	defer k.l.Infof("kafka statistic aggregator daemon for topic %v finished", k.topic)
 	for {
 		ok := k.iteration(ctx)
 		if !ok {
