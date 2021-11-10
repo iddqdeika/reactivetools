@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	adapter "github.com/iddqdeika/kafka-adapter"
+	"github.com/iddqdeika/reactivetools/statistic"
 	helpful "github.com/iddqdeika/rrr/helpful"
 	"strconv"
 	"time"
@@ -81,8 +82,8 @@ type checkOrderProvider struct {
 // дает статистики по провайдеру
 // пока это только лаг очереди, которую он смотрит.
 // не ну а шо, эт уже неплохо.
-func (p *checkOrderProvider) Statistics() ([]Statistic, error) {
-	ss := make([]Statistic, 0)
+func (p *checkOrderProvider) Statistics() ([]statistic.Statistic, error) {
+	ss := make([]statistic.Statistic, 0)
 	lags, err := p.getKafkaLagStatistic()
 	if err != nil {
 		return nil, err
@@ -91,7 +92,7 @@ func (p *checkOrderProvider) Statistics() ([]Statistic, error) {
 	return ss, nil
 }
 
-func (p *checkOrderProvider) getKafkaLagStatistic() (Statistic, error) {
+func (p *checkOrderProvider) getKafkaLagStatistic() (statistic.Statistic, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), lagRetrievingTimeout)
 	defer cancel()
 	lag, err := p.q.GetConsumerLagForSinglePartition(ctx, p.orderTopicName)
@@ -109,6 +110,10 @@ type SimpleStatistic struct {
 	N    string
 	V    string
 	Desc string
+}
+
+func (s SimpleStatistic) Error() error {
+	return nil
 }
 
 func (s SimpleStatistic) Name() string {

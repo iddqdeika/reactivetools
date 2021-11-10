@@ -2,6 +2,7 @@ package reactivetools
 
 import (
 	"context"
+	"github.com/iddqdeika/reactivetools/statistic"
 	"time"
 )
 
@@ -21,7 +22,7 @@ type stubOrderProvider struct {
 	ch       chan CheckOrder
 }
 
-func (s *stubOrderProvider) Statistics() ([]Statistic, error) {
+func (s *stubOrderProvider) Statistics() ([]statistic.Statistic, error) {
 	return nil, nil
 }
 

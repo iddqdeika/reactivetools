@@ -3,6 +3,7 @@ package reactivetools
 import (
 	"context"
 	"database/sql"
+	"github.com/iddqdeika/reactivetools/statistic"
 	"github.com/iddqdeika/rrr/helpful"
 	"io"
 )
@@ -66,7 +67,7 @@ type CheckProviderFabric interface {
 // предоставляет канал, из которого можно забирать поступающие заказы на проверку
 type CheckOrderProvider interface {
 	OrderChan() chan CheckOrder
-	StatisticProvider
+	statistic.StatisticProvider
 }
 
 // процессор проверок
@@ -82,21 +83,6 @@ type CheckOrderProcessor interface {
 // передает резултаты проверки куда надо (например, публикует в соотв. очередь)
 type CheckResultPublisher interface {
 	PublishCheckResult(r CheckResult) error
-}
-
-// провайдер статистик
-// интерфейс, который может вернуть разнообразные статистики.
-// например, стандартная реализация CheckOrderProvider предоставляет данные об очереди заказов на проверку
-type StatisticProvider interface {
-	Statistics() ([]Statistic, error)
-}
-
-// статистика
-// прредставляет единицу данных, отображающих статус/метрику некоего процесса/объекта
-type Statistic interface {
-	Name() string
-	Value() string
-	Description() string
 }
 
 // сервис для получения и обработки изменений

@@ -1,9 +1,10 @@
-package reactivetools
+package statistic
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/iddqdeika/rrr"
 	"github.com/iddqdeika/rrr/helpful"
 	"net/http"
 	"strconv"
@@ -17,7 +18,7 @@ const (
 )
 
 // конструктор сервиса статистики
-func NewStatisticService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (Service, error) {
+func NewStatisticService(config helpful.Config, sp StatisticProvider, l helpful.Logger) (rrr.Service, error) {
 	if config == nil {
 		return nil, fmt.Errorf("must be not-nil Config")
 	}

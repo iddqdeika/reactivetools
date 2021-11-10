@@ -3,6 +3,7 @@ package reactivetools
 import (
 	"context"
 	"fmt"
+	"github.com/iddqdeika/reactivetools/statistic"
 	"github.com/iddqdeika/rrr"
 	"github.com/iddqdeika/rrr/helpful"
 	"time"
@@ -38,7 +39,7 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, p CheckProvider)
 	}
 
 	// статистик сервис
-	stats, err := NewStatisticService(cfg.Child(StatisticServiceConfigKey), prov, l)
+	stats, err := statistic.NewStatisticService(cfg.Child(StatisticServiceConfigKey), prov, l)
 	if err != nil {
 		return nil, err
 	}
