@@ -40,7 +40,7 @@ func (c *statisticCache) getAll() []Statistic {
 	n := time.Now()
 	res := make([]Statistic, 0)
 	for _, record := range c.cache {
-		if record.deadLine.Before(n) {
+		if !record.deadLine.Before(n) {
 			res = append(res, record.s)
 		}
 	}
