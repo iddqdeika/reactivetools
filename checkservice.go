@@ -40,8 +40,10 @@ func NewKafkaCheckService(cfg helpful.Config, l helpful.Logger, p CheckProvider)
 	}
 
 	var services []rrr.Service
-	if cfg.Child("kafka") != nil {
-		adapt, err := kafkaadapt.FromConfig(cfg, l)
+
+	// если в конфиге есть указание кафки и отправщика статистик - то инициализируем отправку статистик туда
+	if cfg.Contains("statistic_sender") {
+		adapt, err := kafkaadapt.FromConfig(cfg.Child("statistic_sender"), l)
 		if err != nil {
 			return nil, err
 		}

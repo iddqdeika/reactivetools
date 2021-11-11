@@ -32,8 +32,8 @@ github.com/hashicorp/go-uuid v1.0.2 h1:cfejS+Tpcp13yd5nYHWDI6qVCny6wyX2Mt5SGur2I
 github.com/hashicorp/go-uuid v1.0.2/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/iddqdeika/kafka-adapter v1.5.6 h1:dtENVlYtTcZdtBjigXc9tVD38N7vsIIPao/m2qKHCH0=
 github.com/iddqdeika/kafka-adapter v1.5.6/go.mod h1:pvDRAyBavVaVNg645fvk82nYQ7zqSJsKgZ053AN3hfk=
-github.com/iddqdeika/rrr v1.3.5 h1:iqWkYw+MshNbYwqDPuFwWxS54AmeGlBLeNwKn06hZFU=
-github.com/iddqdeika/rrr v1.3.5/go.mod h1:eZBPgRgsk49UKGXs6eg3YtqSzxfWiQoQ0Zz/e7i/s18=
+github.com/iddqdeika/rrr v1.6.3 h1:+UjWQzFAmFqZVcga+D1bAIEMBXgZ+2MeY2tK7K1Ad2c=
+github.com/iddqdeika/rrr v1.6.3/go.mod h1:eZBPgRgsk49UKGXs6eg3YtqSzxfWiQoQ0Zz/e7i/s18=
 github.com/jcmturner/gofork v1.0.0 h1:J7uCkflzTEhUZ64xqKnkDxq3kzc96ajM1Gli5ktUem8=
 github.com/jcmturner/gofork v1.0.0/go.mod h1:MK8+TM0La+2rjBD4jE12Kj1pCCxK7d2LK/UM3ncEo0o=
 github.com/klauspost/compress v1.9.8 h1:VMAMUUOh+gaxKTMk+zqbjsSjsIcUcL/LF4o63i82QyA=
