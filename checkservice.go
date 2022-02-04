@@ -248,7 +248,7 @@ func (c *checkService) dispatch(ctx context.Context, o CheckOrder) {
 		c.processing <- o
 		go func() {
 			c.l.Infof("order %v for item %v dispatched", o.CheckName(), o.ObjectIdentifier())
-			c.process(o)
+			c.process(ctx, o)
 			<-c.balancer
 		}()
 	case <-ctx.Done():
@@ -256,9 +256,9 @@ func (c *checkService) dispatch(ctx context.Context, o CheckOrder) {
 	}
 }
 
-func (c *checkService) process(o CheckOrder) {
+func (c *checkService) process(ctx context.Context, o CheckOrder) {
 	for {
-		err := c.processor.Process(nil, o)
+		err := c.processor.Process(ctx, o)
 		if err == nil {
 			return
 		}
