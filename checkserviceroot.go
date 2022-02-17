@@ -34,7 +34,6 @@ type kafkaCheckServiceRoot struct {
 // регистрация компонент.
 // выбираем реализации и инстанциируем здесь.
 func (r *kafkaCheckServiceRoot) Register() []error {
-	defer r.l.Infof("register finished")
 
 	// конфиг
 	cfg, err := helpful.NewJsonCfg(checkServiceJsonConfigFileName)
@@ -55,6 +54,7 @@ func (r *kafkaCheckServiceRoot) Register() []error {
 		}
 	}
 	r.l.Infof("logger initialized")
+	defer r.l.Infof("register finished")
 
 	// сбор ошибок
 	var errs []error
