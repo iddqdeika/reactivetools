@@ -34,9 +34,6 @@ type kafkaCheckServiceRoot struct {
 // регистрация компонент.
 // выбираем реализации и инстанциируем здесь.
 func (r *kafkaCheckServiceRoot) Register() []error {
-	// логгер
-	r.l = helpful.DefaultLogger.WithLevel(helpful.LogInfo)
-	r.l.Infof("logger initialized")
 	defer r.l.Infof("register finished")
 
 	// конфиг
@@ -45,6 +42,19 @@ func (r *kafkaCheckServiceRoot) Register() []error {
 	if err != nil {
 		return []error{err}
 	}
+	// логгер
+	r.l = helpful.DefaultLogger.WithLevel(helpful.LogInfo)
+	if cfg.Contains("log") {
+		lvl, _ := cfg.Child("log").GetString("level")
+		switch lvl {
+		case "error":
+			r.l = helpful.DefaultLogger.WithLevel(helpful.LogError)
+		case "info":
+		default:
+			r.l = helpful.DefaultLogger.WithLevel(helpful.LogInfo)
+		}
+	}
+	r.l.Infof("logger initialized")
 
 	// сбор ошибок
 	var errs []error
