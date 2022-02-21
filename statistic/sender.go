@@ -67,7 +67,7 @@ func (k *kafkaStatisticSender) Run(ctx context.Context) error {
 func (k *kafkaStatisticSender) iterate(ctx context.Context) error {
 	stats, err := k.p.Statistics()
 	if err != nil {
-		return fmt.Errorf("cant get statistics to send")
+		return fmt.Errorf("cant get statistics to send: %v", err)
 	}
 	return k.send(ctx, stats)
 }
