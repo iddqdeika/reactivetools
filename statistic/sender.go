@@ -57,7 +57,7 @@ func (k *kafkaStatisticSender) Run(ctx context.Context) error {
 		case <-t.C:
 			err := k.iterate(ctx)
 			if err != nil {
-				k.l.Errorf("err during statistics send: %v")
+				k.l.Errorf("err during statistics send: %v", err)
 			}
 			t.Reset(k.interval)
 		}
